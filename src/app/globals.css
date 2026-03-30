@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-midnight:      var(--midnight);
+  --color-surface:       var(--surface);
+  --color-card:          var(--card);
+  --color-elevated:      var(--card);
+  --color-border:        var(--border);
+  --color-muted:         var(--muted);
+  --color-secondary:     var(--secondary);
+  --color-primary-text:  var(--primary-text);
+  --color-accent:        var(--accent);
+  --color-accent-light:  var(--accent-light);
+  --color-accent-glow:   var(--accent-glow);
+  --color-warm:          var(--accent);
+  --color-warm-light:    var(--accent-light);
+  --color-success:       #30D158;
+  --color-cream:         var(--midnight);
+  --color-bg-landing:    var(--bg-landing);
+  --color-bg-research:   var(--bg-research);
+  --color-bg-eotg:       var(--bg-eotg);
+  --color-bg-perfumery:  var(--bg-perfumery);
+  --font-heading: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+  --font-body: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+  --font-jetbrains: var(--font-jetbrains-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Professional Light Mode (Zinc + Orange) */
+  --midnight: #FFFFFF;
+  --bg-landing: #FAFAFA;
+  --bg-research: #FFFFFF;
+  --bg-eotg: #FAFAFA;
+  --bg-perfumery: #FFFFFF;
+  --surface: #F4F4F5; 
+  --card: #FFFFFF; 
+  --border: #E4E4E7; 
+  --primary-text: #09090B; 
+  --accent: #EA580C; /* Professional Rust/Orange */
+  --accent-light: #F97316; 
+  --accent-glow: rgba(234, 88, 12, 0.15);
+  --muted: #71717A; 
+  --secondary: #3F3F46;
+}
+
+.dark {
+  /* Professional Dark Mode (Zinc + Orange) */
+  --midnight: #09090B;
+  --bg-landing: #09090B;
+  --bg-research: #09090B;
+  --bg-eotg: #09090B;
+  --bg-perfumery: #09090B;
+  --surface: #18181B; 
+  --card: #09090B; 
+  --border: #27272A; 
+  --primary-text: #FAFAFA; 
+  --accent: #F97316; 
+  --accent-light: #FB923C; 
+  --accent-glow: rgba(249, 115, 22, 0.15);
+  --muted: #A1A1AA; 
+  --secondary: #D4D4D8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--midnight);
+  color: var(--color-primary-text);
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.7;
+  text-align: center;
+  cursor: none;
+  overflow-x: hidden;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+  font-weight: 800; /* Removed italic, kept heavy bold */
+}
+
+.custom-cursor {
+  position: fixed; top: 0; left: 0; width: 12px; height: 12px;
+  border: 1.5px solid var(--color-accent);
+  pointer-events: none; z-index: 99999;
+  mix-blend-mode: difference; transition: transform 0.1s ease;
+}
+.custom-cursor::before, .custom-cursor::after { content: ''; position: absolute; background: var(--color-accent); }
+.custom-cursor::before { width: 1px; height: 12px; top: -6px; left: 50%; transform: translateX(-50%); }
+.custom-cursor::after { width: 12px; height: 1px; left: -6px; top: 50%; transform: translateY(-50%); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-midnight); }
+::-webkit-scrollbar-thumb { background: var(--color-border); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+::selection { background: var(--color-accent); color: var(--color-cream); }
+
+* { border-radius: 0 !important; }
+
+input, textarea, select, button {
+  border-radius: 0 !important; outline: none; cursor: none;
+  font-family: var(--font-body);
+}
+input:focus, textarea:focus, select:focus { border-color: var(--color-accent) !important; }
+a { cursor: none; }
+
+.section-padding { padding: 100px 80px; }
+@media (max-width: 1024px) { .section-padding { padding: 80px 40px; } }
+@media (max-width: 640px) { .section-padding { padding: 60px 20px; } }
+
+.section-label-band {
+  background: var(--color-accent); color: var(--color-cream);
+  padding: 10px 80px; font-size: 12px; font-family: var(--font-body);
+  letter-spacing: 0.35em; text-transform: uppercase; font-weight: 800;
+}
+@media (max-width: 1024px) { .section-label-band { padding-left: 40px; padding-right: 40px; } }
+@media (max-width: 640px) { .section-label-band { padding-left: 20px; padding-right: 20px; } }
+
+@keyframes clipReveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.clip-reveal { animation: clipReveal 0.5s ease forwards; }
+
+.recharts-cartesian-grid-horizontal line { stroke: var(--color-border) !important; }
+.recharts-cartesian-grid-vertical line { display: none; }
+
+@media (hover: none) and (pointer: coarse) {
+  body { cursor: auto; }
+  a, button, input, textarea, select { cursor: auto; }
+  .custom-cursor { display: none !important; }
+}
+
+.heading-hero { font-size: clamp(72px, 10vw, 128px); line-height: 0.92; }
+.heading-section { font-size: clamp(48px, 6vw, 80px); line-height: 1.05; }
+.heading-sub { font-size: clamp(28px, 3.5vw, 42px); line-height: 1.15; }
+
+.glow { box-shadow: 0 0 30px var(--color-accent-glow); }
+.glass-card { background: var(--color-card); backdrop-filter: blur(12px); border: 1px solid var(--color-border); }
+
+/* ── View Transitions: circular ripple from theme toggle ── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* The new theme slides in as an expanding circle */
+::view-transition-new(root) {
+  animation: theme-ripple-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  clip-path: circle(0px at var(--ripple-x, 50%) var(--ripple-y, 50%));
+}
+
+@keyframes theme-ripple-in {
+  from {
+    clip-path: circle(0px at var(--ripple-x, 50%) var(--ripple-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--ripple-r, 150vmax) at var(--ripple-x, 50%) var(--ripple-y, 50%));
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Old theme fades out gently underneath */
+::view-transition-old(root) {
+  animation: theme-ripple-out 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  z-index: 0;
+}
+
+@keyframes theme-ripple-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
