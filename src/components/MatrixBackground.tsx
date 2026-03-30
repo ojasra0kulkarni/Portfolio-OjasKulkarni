@@ -24,9 +24,9 @@ function makeParticle(w: number, h: number, forceVisible = false): Particle {
     x: Math.random() * w,
     y: forceVisible ? Math.random() * h : (isFalling ? -20 : Math.random() * h),
     value: NUMS[Math.floor(Math.random() * NUMS.length)],
-    alpha: Math.random() * 0.18 + 0.04,
-    alphaDir: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.004 + 0.001),
-    size: Math.random() * 7 + 8,
+    alpha: Math.random() * 0.33 + 0.12,
+    alphaDir: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.006 + 0.002),
+    size: Math.random() * 10 + 12,
     speed: Math.random() * 0.45 + 0.12,
     drift: (Math.random() - 0.5) * 0.12,
     isFalling,
@@ -69,19 +69,19 @@ export default function MatrixBackground() {
           p.x += p.drift;
           if (Math.random() < 0.012) p.value = NUMS[Math.floor(Math.random() * NUMS.length)];
           p.alpha += p.alphaDir * 0.5;
-          p.alpha = Math.max(0.03, Math.min(0.22, p.alpha));
+          p.alpha = Math.max(0.1, Math.min(0.45, p.alpha));
           if (p.y > ch + 20 || p.x < -20 || p.x > cw + 20) {
             particlesRef.current[i] = makeParticle(cw, ch, false);
           }
         } else {
           p.alpha += p.alphaDir;
-          if (p.alpha > 0.22 || p.alpha < 0.01) {
+          if (p.alpha > 0.45 || p.alpha < 0.05) {
             p.alphaDir *= -1;
-            if (p.alpha < 0.01) {
+            if (p.alpha < 0.05) {
               p.x = Math.random() * cw;
               p.y = Math.random() * ch;
               p.value = NUMS[Math.floor(Math.random() * NUMS.length)];
-              p.size = Math.random() * 7 + 8;
+              p.size = Math.random() * 10 + 12;
             }
           }
         }
