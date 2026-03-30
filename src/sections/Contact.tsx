@@ -8,14 +8,26 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', subject: 'General Inquiry', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setStatus('sending');
-    try {
-      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-      if (res.ok) { setStatus('sent'); setForm({ name: '', email: '', subject: 'General Inquiry', message: '' }); }
-      else { setStatus('error'); }
-    } catch { setStatus('error'); }
+    
+    // Construct the mailto link
+    const mailtoLink = `mailto:ojas.v.kulkarni@gmail.com?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
+    )}`;
+
+    // Open user's email client
+    window.location.href = mailtoLink;
+    
+    // Show success state briefly then reset
+    setTimeout(() => {
+      setStatus('sent');
+      setTimeout(() => {
+        setForm({ name: '', email: '', subject: 'General Inquiry', message: '' });
+        setStatus('idle');
+      }, 3000);
+    }, 500);
   };
 
   return (
