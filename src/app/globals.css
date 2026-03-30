@@ -98,12 +98,12 @@ body {
 
 * { border-radius: 0 !important; }
 
-input, textarea, select, button {
-  border-radius: 0 !important; outline: none; cursor: none;
-  font-family: var(--font-body);
+input, textarea, select {
+  border-radius: 0 !important; outline: none;
 }
-input:focus, textarea:focus, select:focus { border-color: var(--color-accent) !important; }
-a { cursor: none; }
+input:focus, textarea:focus, select:focus {
+  border-color: var(--color-accent) !important;
+}
 
 .section-padding { padding: 100px 80px; }
 @media (max-width: 1024px) { .section-padding { padding: 80px 40px; } }
@@ -123,11 +123,7 @@ a { cursor: none; }
 .recharts-cartesian-grid-horizontal line { stroke: var(--color-border) !important; }
 .recharts-cartesian-grid-vertical line { display: none; }
 
-@media (hover: none) and (pointer: coarse) {
-  body { cursor: auto; }
-  a, button, input, textarea, select { cursor: auto; }
-  .custom-cursor { display: none !important; }
-}
+
 
 .heading-hero { font-size: clamp(72px, 10vw, 128px); line-height: 0.92; }
 .heading-section { font-size: clamp(48px, 6vw, 80px); line-height: 1.05; }
