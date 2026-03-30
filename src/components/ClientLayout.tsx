@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
-import CustomCursor from '@/components/CustomCursor';
 import SmoothScroll from '@/components/SmoothScroll';
 
 const pageVariants = {
@@ -27,7 +26,6 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
   return (
     <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh' }}>
       <SmoothScroll>
-        <CustomCursor />
         <Navbar />
         <AnimatePresence mode="wait">
           <motion.div
