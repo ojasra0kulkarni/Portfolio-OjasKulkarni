@@ -3,6 +3,7 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import SectionLabel from '@/components/SectionLabel';
 import SectionFooter from '@/components/SectionFooter';
+import Image from 'next/image';
 
 type Note = { name: string; color: string };
 
@@ -63,7 +64,7 @@ export default function Perfumery() {
     <div className="bg-bg-perfumery min-h-screen pt-14">
       {/* Hero Image */}
       <div className="relative w-full overflow-hidden">
-        <img src="/images/perfumery-hero.jpg" alt="Perfumery collection" className="w-full h-auto block" />
+        <Image src="/images/perfumery-hero.jpg" alt="Perfumery collection" width={1920} height={1080} className="w-full h-auto block" priority />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg-perfumery" />
         <div className="absolute bottom-12 left-0 right-0 flex flex-col items-center text-center z-10 px-4">
           <AnimatedSection>
@@ -88,19 +89,19 @@ export default function Perfumery() {
         <AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-16">
             <div className="md:col-span-8 h-[300px] md:h-[450px] border border-border overflow-hidden relative group">
-              <img src="/images/pexels-alexvrv-34143829.jpg" alt="Perfume Details" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <Image src="/images/pexels-alexvrv-34143829.jpg" alt="Perfume Details" fill sizes="(max-width: 768px) 100vw, 66vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
             <div className="md:col-span-4 h-[300px] md:h-[450px] border border-border overflow-hidden relative group">
-              <img src="/images/pexels-ani-coloca-1105433412-31847824.jpg" alt="Perfume Setup" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <Image src="/images/pexels-ani-coloca-1105433412-31847824.jpg" alt="Perfume Setup" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
             <div className="md:col-span-4 h-[300px] md:h-[500px] border border-border overflow-hidden relative group">
-              <img src="/images/pexels-hamza01nsr-12562775.jpg" alt="Dior Sauvage" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <Image src="/images/pexels-hamza01nsr-12562775.jpg" alt="Dior Sauvage" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
             <div className="md:col-span-3 h-[300px] md:h-[500px] border border-border overflow-hidden relative group">
-              <img src="/images/pexels-cerenvisuals-35488879.jpg" alt="Cologne" className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
+              <Image src="/images/pexels-cerenvisuals-35488879.jpg" alt="Cologne" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover object-top transition-transform duration-700 group-hover:scale-105" />
             </div>
             <div className="md:col-span-5 h-[300px] md:h-[500px] border border-border overflow-hidden relative group">
-              <img src="/images/pexels-isidor-bobinec-94539949-9202848.jpg" alt="In Love With You" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <Image src="/images/pexels-isidor-bobinec-94539949-9202848.jpg" alt="In Love With You" fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
           </div>
         </AnimatedSection>

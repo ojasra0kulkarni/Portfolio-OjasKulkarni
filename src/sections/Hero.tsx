@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const wordVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -61,13 +62,16 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] as any }}
-          className="w-full h-full flex items-center justify-center"
+          className="w-full h-full flex items-center justify-center relative"
         >
-          <img
+          <Image
             key={heroImage}
             src={heroImage}
             alt="Ojas Kulkarni"
-            className="w-full h-full object-contain transition-opacity duration-500"
+            fill
+            sizes="(max-width: 1024px) 100vw, 42vw"
+            priority
+            className="object-contain transition-opacity duration-500"
           />
         </motion.div>
       </div>
