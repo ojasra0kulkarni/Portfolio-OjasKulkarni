@@ -111,7 +111,7 @@ export async function POST(req: Request) {
     const recentMessages = (messages as any[]).slice(-6);
 
     const result = streamText({
-      model: google('gemini-3-flash'),
+      model: google('gemini-2.5-flash-lite'),
       system: systemPrompt,
       messages: recentMessages,
       temperature: 0.3,
