@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { MessageCircleQuestion, X, Send, Bot, Volume2, VolumeX } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { MessageCircleQuestion, X, Send, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
@@ -15,52 +15,13 @@ export default function Chatbot() {
   const [inputLocal, setInputLocal] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.speechSynthesis?.cancel(); // Stop talking when closed
     }
   }, [messages, isOpen]);
-
-  const speak = useCallback((text: string) => {
-    if (!voiceEnabled || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel(); // Stop previous
-    
-    // Clean text: remove emojis and asterisks markdown for cleaner speech
-    const cleanText = text.replace(/[*#]/g, '').replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '');
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    const voices = window.speechSynthesis.getVoices();
-    
-    // 1. Hunt for the absolute most realistic Neural/Cloud voices first (Edge's Natural voices are indistinguishable from humans)
-    let selectedVoice = 
-      voices.find(v => v.name.includes('Microsoft Neerja Online (Natural)')) || // The best realistic Indian female voice
-      voices.find(v => v.name.includes('Online (Natural)') && v.name.includes('Female')) || // Any other realistic Natural voice
-      voices.find(v => v.name.includes('Google UK English Female')) || // Chrome's cloud-based premium voice
-      voices.find(v => v.name.includes('Premium') || v.name.includes('Enhanced')) || // Mac's high-quality downloaded voices
-      voices.find(v => v.name.includes('Veena') || v.name.includes('Heera') || v.name.includes('Neerja')) || // Standard offline Indian
-      voices.find(v => v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Victoria')); // Basic fallback
-
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
-    
-    // Soften the cadence and raise the pitch for a more feminine, gentle delivery
-    utterance.rate = 0.95; 
-    utterance.pitch = 1.2;
-    window.speechSynthesis.speak(utterance);
-  }, [voiceEnabled]);
-
-  // Load voices proactively
-  useEffect(() => {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.getVoices();
-    }
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +34,6 @@ export default function Chatbot() {
     setMessages(prev => [...prev, userMsg, { id: assistantMsgId, role: 'assistant', content: '' }]);
     setInputLocal('');
     setIsLoading(true);
-    window.speechSynthesis?.cancel(); // Stop talking when user sends new message
 
     try {
       const history = [...messages, userMsg].map(m => ({ role: m.role, content: m.content }));
@@ -94,22 +54,18 @@ export default function Chatbot() {
       const decoder = new TextDecoder();
       let accumulated = '';
 
-      let finalOutput = '';
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         accumulated += decoder.decode(value, { stream: true });
-        finalOutput = accumulated;
         setMessages(prev =>
           prev.map(m => m.id === assistantMsgId ? { ...m, content: accumulated } : m)
         );
       }
-      // Speak final output once stream completes
-      speak(finalOutput);
     } catch (err: any) {
-      const errorMessage = err.message.includes('API Key Missing') 
+      const errorMessage = err?.message?.includes('API Key Missing') 
         ? err.message 
-        : 'Sorry, the connection failed. If you just deployed, please ensure your API keys are set in Vercel.';
+        : 'Sorry, the connection failed. Vercel backend might have timed out.';
         
       setMessages(prev =>
         prev.map(m => m.id === assistantMsgId
@@ -170,24 +126,12 @@ export default function Chatbot() {
                     <p className="font-jetbrains text-muted text-[10px] tracking-widest uppercase">AI Assistant · Ojas Kulkarni</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      setVoiceEnabled(!voiceEnabled);
-                      if (voiceEnabled) window.speechSynthesis?.cancel();
-                    }}
-                    className={`p-2 transition-colors ${voiceEnabled ? 'text-accent' : 'text-secondary hover:text-primary-text'}`}
-                    aria-label="Toggle Voice"
-                  >
-                    {voiceEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-                  </button>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="text-secondary hover:text-accent transition-colors p-2"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-secondary hover:text-accent transition-colors p-2"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
               {/* Messages Area */}
