@@ -36,14 +36,13 @@ export default function Chatbot() {
     const utterance = new SpeechSynthesisUtterance(cleanText);
     const voices = window.speechSynthesis.getVoices();
     
-    // 1. Try to find an Indian English Female voice (Veena on Mac, Heera on Windows, Google India)
+    // 1. Strictly try to find a verified Indian English Female voice (Veena on Mac, Heera/Neerja on Windows)
     let selectedVoice = voices.find(v => 
       v.name.includes('Veena') || 
       v.name.includes('Heera') || 
       v.name.includes('Neerja') || 
-      (v.lang.includes('en-IN') && !v.name.includes('Male') && !v.name.includes('Rishi')) ||
-      v.name.includes('Google हिन्दी') ||
-      v.name.includes('India')
+      (v.lang.includes('en-IN') && (v.name.includes('Female') || v.name.includes('girl'))) ||
+      v.name.includes('Google हिन्दी')
     );
 
     // 2. Fallback to any premium female voice if Indian is unavailable on this device
