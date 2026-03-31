@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: 'E.O.T.G.', href: '/eotg' },
   { label: 'Perfumery', href: '/perfumery' },
   { label: 'Contact', href: '/#contact' },
-  { label: 'CV', href: '/Ojas_Kulkarni_CV.pdf' },
+  { label: 'Resume', href: '/Ojas_Kulkarni_CV.pdf' },
 ];
 
 export default function Navbar() {

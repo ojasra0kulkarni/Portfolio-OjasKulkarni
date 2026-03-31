@@ -50,7 +50,7 @@ export default function Hero() {
             { label: 'GitHub', href: 'https://github.com/ojasra0kulkarni' },
             { label: 'LinkedIn', href: 'https://linkedin.com/in/ojaskulkarni18' },
             { label: 'Email', href: 'mailto:ojas.v.kulkarni@gmail.com' },
-            { label: 'CV', href: '/Ojas_Kulkarni_CV.pdf', icon: FileText },
+            { label: 'Resume', href: '/Ojas_Kulkarni_CV.pdf', icon: FileText },
           ].map((s) => (
             <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="text-muted text-[12px] tracking-[0.15em] uppercase hover:text-accent transition-colors duration-200 relative group flex items-center gap-1.5">
               {s.icon && <s.icon size={14} className="mb-0.5" />}

@@ -27,7 +27,7 @@ function PageFooter() {
           </a>
           <span>&middot;</span>
           <a href="/Ojas_Kulkarni_CV.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-orange transition-colors">
-            CV
+            Resume
           </a>
         </div>
         <div className="flex items-center gap-8 text-[10px] text-warm-gray font-dm">
