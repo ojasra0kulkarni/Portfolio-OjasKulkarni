@@ -49,9 +49,9 @@ export default function Chatbot() {
       utterance.voice = selectedVoice;
     }
     
-    // Smooth out the speech cadence
-    utterance.rate = 1.0; 
-    utterance.pitch = 1.0;
+    // Soften the cadence and raise the pitch for a more feminine, gentle delivery
+    utterance.rate = 0.95; 
+    utterance.pitch = 1.2;
     window.speechSynthesis.speak(utterance);
   }, [voiceEnabled]);
 
