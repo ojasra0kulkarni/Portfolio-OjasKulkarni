@@ -62,6 +62,11 @@ export default function Chatbot() {
           prev.map(m => m.id === assistantMsgId ? { ...m, content: accumulated } : m)
         );
       }
+
+      // If the API returns a 200 OK but the stream was completely empty (e.g. blocked by Gemini safety filters)
+      if (!accumulated.trim()) {
+        throw new Error('Empty stream returned from AI');
+      }
     } catch (err: any) {
       const errorMessage = err?.message?.includes('API Key Missing') 
         ? err.message 
