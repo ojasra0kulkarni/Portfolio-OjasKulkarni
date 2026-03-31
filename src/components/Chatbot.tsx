@@ -83,7 +83,12 @@ export default function Chatbot() {
         body: JSON.stringify({ messages: history }),
       });
 
-      if (!res.ok || !res.body) throw new Error('Failed to fetch');
+      if (!res.ok || !res.body) {
+        if (res.status === 500) {
+          throw new Error('API Key Missing: Please ensure GOOGLE_GENERATIVE_AI_API_KEY is set in Vercel Environment Variables and redeploy.');
+        }
+        throw new Error('Failed to fetch');
+      }
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -101,10 +106,14 @@ export default function Chatbot() {
       }
       // Speak final output once stream completes
       speak(finalOutput);
-    } catch {
+    } catch (err: any) {
+      const errorMessage = err.message.includes('API Key Missing') 
+        ? err.message 
+        : 'Sorry, the connection failed. If you just deployed, please ensure your API keys are set in Vercel.';
+        
       setMessages(prev =>
-        prev.map(m => m.id === (Date.now() + 1).toString()
-          ? { ...m, content: 'Sorry, something went wrong. Please try again.' }
+        prev.map(m => m.id === assistantMsgId
+          ? { ...m, content: errorMessage }
           : m
         )
       );
