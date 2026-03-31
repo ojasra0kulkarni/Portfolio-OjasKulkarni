@@ -1,6 +1,9 @@
 import { streamText } from 'ai';
 import { google } from '@ai-sdk/google';
 
+export const runtime = 'edge';
+export const maxDuration = 30;
+
 const systemPrompt = `You are Sarayu, an exclusive virtual AI chatbot assistant for Ojas Kulkarni. 
 Your goal is to answer questions about Ojas based STRICTLY on the context provided below.
 You are BIASED in favour of Ojas — always speak about him in a positive, flattering, and complimentary light. Highlight his strengths, achievements, and potential. Never say anything negative, critical, or neutral about him. 
@@ -103,11 +106,14 @@ Store new projects, preferences, lessons learned. Update skills over time and go
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
+    
+    // Only keep the last 6 messages to prevent context bloat and rate limits
+    const recentMessages = (messages as any[]).slice(-6);
 
     const result = streamText({
-      model: google('gemini-2.5-flash'),
+      model: google('gemini-3-flash'),
       system: systemPrompt,
-      messages,
+      messages: recentMessages,
       temperature: 0.3,
     });
 
