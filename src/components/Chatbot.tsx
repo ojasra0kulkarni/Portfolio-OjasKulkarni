@@ -36,20 +36,29 @@ export default function Chatbot() {
     const utterance = new SpeechSynthesisUtterance(cleanText);
     const voices = window.speechSynthesis.getVoices();
     
-    // Prefer high-quality realistic female voices built into OS
-    const femaleVoice = voices.find(v => 
-      v.name.includes('Google UK English Female') || 
-      v.name.includes('Samantha') || 
-      v.name.includes('Victoria') || 
-      v.name.includes('Karen') || 
-      v.name.includes('Microsoft Zira') ||
-      v.name.includes('Microsoft Hazel') ||
-      v.name.includes('Female') ||
-      v.name.includes('girl')
+    // 1. Try to find an Indian English Female voice (Veena on Mac, Heera on Windows, Google India)
+    let selectedVoice = voices.find(v => 
+      v.name.includes('Veena') || 
+      v.name.includes('Heera') || 
+      v.name.includes('Neerja') || 
+      (v.lang.includes('en-IN') && !v.name.includes('Male') && !v.name.includes('Rishi')) ||
+      v.name.includes('Google हिन्दी') ||
+      v.name.includes('India')
     );
 
-    if (femaleVoice) {
-      utterance.voice = femaleVoice;
+    // 2. Fallback to any premium female voice if Indian is unavailable on this device
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => 
+        v.name.includes('Google UK English Female') || 
+        v.name.includes('Samantha') || 
+        v.name.includes('Victoria') || 
+        v.name.includes('Microsoft Zira') ||
+        v.name.includes('Female')
+      );
+    }
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
     }
     
     utterance.rate = 1.05; // Slightly faster for natural flow
