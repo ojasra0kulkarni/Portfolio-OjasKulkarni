@@ -5,6 +5,8 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
+import { FileText } from 'lucide-react';
+
 const wordVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
@@ -48,14 +50,17 @@ export default function Hero() {
             { label: 'GitHub', href: 'https://github.com/ojasra0kulkarni' },
             { label: 'LinkedIn', href: 'https://linkedin.com/in/ojaskulkarni18' },
             { label: 'Email', href: 'mailto:ojas.v.kulkarni@gmail.com' },
+            { label: 'CV', href: '/Ojas_Kulkarni_CV.pdf', icon: FileText },
           ].map((s) => (
-            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="text-muted text-[12px] tracking-[0.15em] uppercase hover:text-accent transition-colors duration-200 relative group">
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="text-muted text-[12px] tracking-[0.15em] uppercase hover:text-accent transition-colors duration-200 relative group flex items-center gap-1.5">
+              {s.icon && <s.icon size={14} className="mb-0.5" />}
               {s.label}
               <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-accent transition-all duration-200 group-hover:w-full" />
             </a>
           ))}
         </motion.div>
       </div>
+
       {/* Right — Hero Image (theme-aware) */}
       <div className="hidden lg:block w-[42%] bg-surface pt-[80px] pb-12 px-12">
         <motion.div

@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { label: 'E.O.T.G.', href: '/eotg' },
   { label: 'Perfumery', href: '/perfumery' },
   { label: 'Contact', href: '/#contact' },
+  { label: 'CV', href: '/Ojas_Kulkarni_CV.pdf' },
 ];
 
 export default function Navbar() {
@@ -43,16 +44,25 @@ export default function Navbar() {
     <>
       <nav className={`fixed top-0 left-0 right-0 z-[1000] h-14 flex items-center justify-between px-8 md:px-20 transition-all duration-300 ${scrolled ? 'bg-midnight/90 backdrop-blur-md border-b border-border' : 'bg-transparent'}`}>
         <div className="hidden md:flex items-center justify-start gap-8 flex-1">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className={`relative text-[11px] tracking-[0.15em] uppercase transition-colors duration-200 group font-heading ${isActive(link.href) ? 'text-accent' : 'text-secondary hover:text-primary-text'}`}>
-              {link.label}
-              {isActive(link.href) ? (
-                <motion.span layoutId="nav-underline" className="absolute -bottom-1 left-0 right-0 h-px bg-accent" transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }} />
-              ) : (
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-accent transition-all duration-200 group-hover:w-full" />
-              )}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const isExternal = link.href.endsWith('.pdf');
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
+                className={`relative text-[11px] tracking-[0.15em] uppercase transition-colors duration-200 group font-heading ${isActive(link.href) ? 'text-accent' : 'text-secondary hover:text-primary-text'}`}
+              >
+                {link.label}
+                {isActive(link.href) ? (
+                  <motion.span layoutId="nav-underline" className="absolute -bottom-1 left-0 right-0 h-px bg-accent" transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }} />
+                ) : (
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-accent transition-all duration-200 group-hover:w-full" />
+                )}
+              </a>
+            );
+          })}
         </div>
         <Link href="/" className="font-heading text-primary-text text-sm tracking-[0.2em] uppercase ml-auto">Ojas Kulkarni</Link>
         {mounted && (
@@ -97,11 +107,21 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 z-[999] bg-midnight flex flex-col items-center justify-center gap-10">
-            {NAV_LINKS.map((link, i) => (
-              <motion.div key={link.href} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08, duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}>
-                <Link href={link.href} className={`font-heading text-3xl tracking-wider ${isActive(link.href) ? 'text-accent' : 'text-primary-text'}`}>{link.label}</Link>
-              </motion.div>
-            ))}
+            {NAV_LINKS.map((link, i) => {
+              const isExternal = link.href.endsWith('.pdf');
+              return (
+                <motion.div key={link.href} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08, duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}>
+                  <a
+                    href={link.href}
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'noopener noreferrer' : undefined}
+                    className={`font-heading text-3xl tracking-wider ${isActive(link.href) ? 'text-accent' : 'text-primary-text'}`}
+                  >
+                    {link.label}
+                  </a>
+                </motion.div>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
