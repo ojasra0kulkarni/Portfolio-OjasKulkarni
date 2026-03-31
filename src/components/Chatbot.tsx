@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { MessageCircleQuestion, X, Send, Bot } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { MessageCircleQuestion, X, Send, Bot, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
@@ -15,13 +15,53 @@ export default function Chatbot() {
   const [inputLocal, setInputLocal] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.speechSynthesis?.cancel(); // Stop talking when closed
     }
   }, [messages, isOpen]);
+
+  const speak = useCallback((text: string) => {
+    if (!voiceEnabled || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel(); // Stop previous
+    
+    // Clean text: remove emojis and asterisks markdown for cleaner speech
+    const cleanText = text.replace(/[*#]/g, '').replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '');
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const voices = window.speechSynthesis.getVoices();
+    
+    // Hunt for the absolute most realistic Neural/Cloud voices first
+    let selectedVoice = 
+      voices.find(v => v.name.includes('Microsoft Neerja Online (Natural)')) || 
+      voices.find(v => v.name.includes('Online (Natural)') && v.name.includes('Female')) || 
+      voices.find(v => v.name.includes('Google India English Female')) || 
+      voices.find(v => v.name.includes('Premium') && v.lang.includes('en-IN')) ||
+      voices.find(v => v.name.includes('Veena') || v.name.includes('Heera') || v.name.includes('Neerja')) || 
+      voices.find(v => v.name.includes('Google UK English Female')) ||
+      voices.find(v => v.name.includes('Female') || v.name.includes('Samantha'));
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
+    
+    // Soften and feminize
+    utterance.rate = 0.95; 
+    utterance.pitch = 1.2;
+    window.speechSynthesis.speak(utterance);
+  }, [voiceEnabled]);
+
+  // Load voices proactively
+  useEffect(() => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +74,7 @@ export default function Chatbot() {
     setMessages(prev => [...prev, userMsg, { id: assistantMsgId, role: 'assistant', content: '' }]);
     setInputLocal('');
     setIsLoading(true);
+    window.speechSynthesis?.cancel(); // Stop talking when new message arrives
 
     try {
       const history = [...messages, userMsg].map(m => ({ role: m.role, content: m.content }));
@@ -63,10 +104,13 @@ export default function Chatbot() {
         );
       }
 
-      // If the API returns a 200 OK but the stream was completely empty (e.g. blocked by Gemini safety filters)
+      // If the API returns a 200 OK but the stream was completely empty
       if (!accumulated.trim()) {
         throw new Error('Empty stream returned from AI');
       }
+
+      // Speak final output
+      speak(accumulated);
     } catch (err: any) {
       const errorMessage = err?.message?.includes('API Key Missing') 
         ? err.message 
@@ -131,12 +175,24 @@ export default function Chatbot() {
                     <p className="font-jetbrains text-muted text-[10px] tracking-widest uppercase">AI Assistant · Ojas Kulkarni</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-secondary hover:text-accent transition-colors p-2"
-                >
-                  <X size={20} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setVoiceEnabled(!voiceEnabled);
+                      if (voiceEnabled) window.speechSynthesis?.cancel();
+                    }}
+                    className={`p-2 transition-colors ${voiceEnabled ? 'text-accent' : 'text-secondary hover:text-primary-text'}`}
+                    aria-label="Toggle Voice"
+                  >
+                    {voiceEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-secondary hover:text-accent transition-colors p-2"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
 
               {/* Messages Area */}
