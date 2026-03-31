@@ -36,32 +36,22 @@ export default function Chatbot() {
     const utterance = new SpeechSynthesisUtterance(cleanText);
     const voices = window.speechSynthesis.getVoices();
     
-    // 1. Strictly try to find a verified Indian English Female voice (Veena on Mac, Heera/Neerja on Windows)
-    let selectedVoice = voices.find(v => 
-      v.name.includes('Veena') || 
-      v.name.includes('Heera') || 
-      v.name.includes('Neerja') || 
-      (v.lang.includes('en-IN') && (v.name.includes('Female') || v.name.includes('girl'))) ||
-      v.name.includes('Google हिन्दी')
-    );
-
-    // 2. Fallback to any premium female voice if Indian is unavailable on this device
-    if (!selectedVoice) {
-      selectedVoice = voices.find(v => 
-        v.name.includes('Google UK English Female') || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Victoria') || 
-        v.name.includes('Microsoft Zira') ||
-        v.name.includes('Female')
-      );
-    }
+    // 1. Hunt for the absolute most realistic Neural/Cloud voices first (Edge's Natural voices are indistinguishable from humans)
+    let selectedVoice = 
+      voices.find(v => v.name.includes('Microsoft Neerja Online (Natural)')) || // The best realistic Indian female voice
+      voices.find(v => v.name.includes('Online (Natural)') && v.name.includes('Female')) || // Any other realistic Natural voice
+      voices.find(v => v.name.includes('Google UK English Female')) || // Chrome's cloud-based premium voice
+      voices.find(v => v.name.includes('Premium') || v.name.includes('Enhanced')) || // Mac's high-quality downloaded voices
+      voices.find(v => v.name.includes('Veena') || v.name.includes('Heera') || v.name.includes('Neerja')) || // Standard offline Indian
+      voices.find(v => v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Victoria')); // Basic fallback
 
     if (selectedVoice) {
       utterance.voice = selectedVoice;
     }
     
-    utterance.rate = 1.05; // Slightly faster for natural flow
-    utterance.pitch = 1.05; // Slightly higher pitch
+    // Smooth out the speech cadence
+    utterance.rate = 1.0; 
+    utterance.pitch = 1.0;
     window.speechSynthesis.speak(utterance);
   }, [voiceEnabled]);
 
